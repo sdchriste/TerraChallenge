@@ -22,8 +22,8 @@ resource "azurerm_resource_group" "sec-rg" {
 
 resource "azurerm_virtual_network" "sec-vn" {
   name                = "tfc-network"
-  resource_group_name = azurerm_resource_group.rg-tfc.name
-  location            = azurerm_resource_group.rg-tfc.location
+  resource_group_name = azurerm_resource_group.sec-rg.name
+  location            = azurerm_resource_group.sec-rg.location
   address_space       = ["10.123.0.0/16"]
 
   }
