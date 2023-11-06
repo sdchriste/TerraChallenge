@@ -56,7 +56,7 @@ resource "azurerm_public_ip" "sec-publicip1" {
   allocation_method   = "Dynamic"
 }
 
-resource "azurerm_network_interface" "sec-nic" {
+resource "azurerm_network_interface" "sec-nic1" {
   name                = "lnx1-nic"
   location            = azurerm_resource_group.sec-rg.location
   resource_group_name = azurerm_resource_group.sec-rg.name
@@ -70,6 +70,21 @@ resource "azurerm_network_interface" "sec-nic" {
   }
 }
 
+resource "azurerm_network_interface" "sec-nic2" {
+  name                = "win1-nic"
+  location            = azurerm_resource_group.sec-rg.location
+  resource_group_name = azurerm_resource_group.sec-rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.sec-subnet3.id
+    private_ip_address_allocation = "Dynamic"
+
+  }
+}
+
+
+
 resource "azurerm_network_security_group" "sec-nsg" {
   name                = "tfc-nsg1"
   resource_group_name = azurerm_resource_group.sec-rg.name
@@ -81,4 +96,59 @@ resource "azurerm_subnet_network_security_group_association" "sec-subnet-nsg" {
   subnet_id                 = azurerm_subnet.sec-subnet1.id
   network_security_group_id = azurerm_network_security_group.sec-nsg.id
 
+}
+
+resource "azurerm_windows_virtual_machine" "sec-win1" {
+  name                = "tcf-win1"
+  resource_group_name = azurerm_resource_group.sec-rg.name
+  location            = azurerm_resource_group.sec-rg.location
+  size                = "Standard_B1ms"
+  admin_username      = "adminuser"
+  admin_password      = "P@55w0rd!"
+  network_interface_ids = [
+    azurerm_network_interface.sec-nic2.id
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsDesktop"
+    offer     = "Windows-ent-cpc"
+    sku       = "win10-21h2-ent-cpc-m365-g2"
+    version   = "latest"
+  }
+}
+
+#ssh key gen 
+
+resource "azurerm_linux_virtual_machine" "sec-lnx1" {
+  name                = "tfc-lnc1"
+  resource_group_name = azurerm_resource_group.sec-rg.name
+  location            = azurerm_resource_group.sec-rg.location
+  size                = "Standard_B1ms"
+  admin_username      = "adminuser"
+  network_interface_ids = [
+    azurerm_network_interface.sec-nic1.id,
+  ]
+
+  admin_ssh_key {
+    username   = "adminuser"
+    #key1
+    public_key = file("C:\Users\steven.christenson/.ssh/id_rsa")
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
 }
