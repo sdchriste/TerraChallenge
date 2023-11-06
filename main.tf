@@ -63,9 +63,22 @@ resource "azurerm_network_interface" "sec-nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.web.id
+    subnet_id                     = azurerm_subnet.sec-subnet1.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.tfc1-pip.id
+    public_ip_address_id          = azurerm_public_ip.sec-publicip1.id
 
   }
+}
+
+resource "azurerm_network_security_group" "sec-nsg" {
+  name                = "tfc-nsg1"
+  resource_group_name = azurerm_resource_group.sec-rg.name
+  location            = azurerm_resource_group.sec-rg.location
+}
+
+
+resource "azurerm_subnet_network_security_group_association" "sec-subnet-nsg" {
+  subnet_id                 = azurerm_subnet.sec-subnet1.id
+  network_security_group_id = azurerm_network_security_group.sec-nsg.id
+
 }
