@@ -135,9 +135,9 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
   ]
 
   admin_ssh_key {
-    username   = "adminuser"
+    username = "adminuser"
     #key1
-    public_key = file("C:\Users\steven.christenson/.ssh/id_rsa")
+    public_key = file("c:/users/steven.christenson/.ssh/id_rsa.pub")
   }
 
   os_disk {
