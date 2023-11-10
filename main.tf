@@ -152,3 +152,6 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
     version   = "latest"
   }
 }
+
+
+#test
