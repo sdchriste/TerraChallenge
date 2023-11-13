@@ -1,4 +1,4 @@
-# Main.tf v0 - Brnach Checkpoint1 - C
+# Main.tf v0.1 - Brnach Checkpoint2 - C
 
 terraform {
   required_providers {
@@ -162,10 +162,44 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
   }
 }
 
-resource = "azurerm_recovery_services_vault" "sec-vault" {
+resource "azurerm_recovery_services_vault" "sec-vault" {
   name                = "tfc-vault"
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
   sku                 = "Standard"
+
 }
+
+resource "azurerm_backup_policy_vm" "sec-bupolicy" {
+  name                = "tfc-BackUpP"
+  resource_group_name = azurerm_resource_group.sec-rg.name
+  recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
+  timezone            = "UTC"
+
+  backup {
+    frequency = "Daily"
+    time      = "23:00"
+  }
+  retention_daily {
+    count = 10
+  }
+  retention_weekly {
+    count    = 4
+    weekdays = ["Friday"]
+  }
+  retention_monthly {
+    count    = 12
+    weekdays = ["Friday"]
+    weeks    = ["First"]
+  }
+  retention_yearly {
+    count    = 10
+    weekdays = ["Sunday"]
+    weeks    = ["First"]
+    months   = ["January"]
+  }
+}
+
+
+
 
