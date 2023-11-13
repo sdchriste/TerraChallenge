@@ -14,6 +14,15 @@ provider "azurerm" {
   features {}
 }
 
+locals {
+  pip_name  = "tfc1-pip"
+  nic1_name = "lnx1-nic"
+  nic2_name = "win1-nic"
+  nsg_name  = "tfc-nsg1"
+  win_name  = "tcf-win1"
+  lnx_name  = "tfc-lnc1"
+}
+
 resource "azurerm_resource_group" "sec-rg" {
   name     = "rg-tfc"
   location = "East Us"
@@ -50,14 +59,14 @@ resource "azurerm_subnet" "sec-subnet3" {
 }
 
 resource "azurerm_public_ip" "sec-publicip1" {
-  name                = "tfc1-pip"
+  name                = local.pip_name
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
   allocation_method   = "Dynamic"
 }
 
 resource "azurerm_network_interface" "sec-nic1" {
-  name                = "lnx1-nic"
+  name                = local.lnx_name
   location            = azurerm_resource_group.sec-rg.location
   resource_group_name = azurerm_resource_group.sec-rg.name
 
@@ -71,7 +80,7 @@ resource "azurerm_network_interface" "sec-nic1" {
 }
 
 resource "azurerm_network_interface" "sec-nic2" {
-  name                = "win1-nic"
+  name                = local.nic2_name
   location            = azurerm_resource_group.sec-rg.location
   resource_group_name = azurerm_resource_group.sec-rg.name
 
@@ -86,7 +95,7 @@ resource "azurerm_network_interface" "sec-nic2" {
 
 
 resource "azurerm_network_security_group" "sec-nsg" {
-  name                = "tfc-nsg1"
+  name                = local.nsg_name
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
 }
@@ -99,7 +108,7 @@ resource "azurerm_subnet_network_security_group_association" "sec-subnet-nsg" {
 }
 
 resource "azurerm_windows_virtual_machine" "sec-win1" {
-  name                = "tcf-win1"
+  name                = local.win_name
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
   size                = "Standard_B1ms"
@@ -125,7 +134,7 @@ resource "azurerm_windows_virtual_machine" "sec-win1" {
 #ssh key gen 
 
 resource "azurerm_linux_virtual_machine" "sec-lnx1" {
-  name                = "tfc-lnc1"
+  name                = local.lnx_name
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
   size                = "Standard_B1ms"
@@ -154,4 +163,4 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
 }
 
 
-#test
+
