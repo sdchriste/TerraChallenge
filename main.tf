@@ -24,13 +24,13 @@ locals {
 }
 
 resource "azurerm_resource_group" "sec-rg" {
-  name     = "rg-tfc"
-  location = "East Us"
+  name     = var.rg_name
+  location = var.loc_name
 
 }
 
 resource "azurerm_virtual_network" "sec-vn" {
-  name                = "tfc-network"
+  name                = var.v_net
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
   address_space       = ["10.123.0.0/16"]
@@ -38,21 +38,21 @@ resource "azurerm_virtual_network" "sec-vn" {
 }
 
 resource "azurerm_subnet" "sec-subnet1" {
-  name                 = "Web"
+  name                 = var.subnet_1
   resource_group_name  = azurerm_resource_group.sec-rg.name
   virtual_network_name = azurerm_virtual_network.sec-vn.name
   address_prefixes     = ["10.123.1.0/24"]
 }
 
 resource "azurerm_subnet" "sec-subnet2" {
-  name                 = "Data"
+  name                 = var.subnet_2
   resource_group_name  = azurerm_resource_group.sec-rg.name
   virtual_network_name = azurerm_virtual_network.sec-vn.name
   address_prefixes     = ["10.123.2.0/24"]
 }
 
 resource "azurerm_subnet" "sec-subnet3" {
-  name                 = "JumpBox"
+  name                 = var.subnet_3
   resource_group_name  = azurerm_resource_group.sec-rg.name
   virtual_network_name = azurerm_virtual_network.sec-vn.name
   address_prefixes     = ["10.123.3.0/24"]
@@ -162,5 +162,10 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
   }
 }
 
-
+resource = "azurerm_recovery_services_vault" "sec-vault" {
+  name                = "tfc-vault"
+  resource_group_name = azurerm_resource_group.sec-rg.name
+  location            = azurerm_resource_group.sec-rg.location
+  sku                 = "Standard"
+}
 
