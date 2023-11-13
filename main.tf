@@ -174,7 +174,7 @@ resource "azurerm_backup_policy_vm" "sec-bupolicy" {
   name                = "tfc-BackUpP"
   resource_group_name = azurerm_resource_group.sec-rg.name
   recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
-  timezone            = "UTC"
+  timezone            = "US Eastern Standard Time"
 
   backup {
     frequency = "Daily"
