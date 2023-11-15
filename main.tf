@@ -200,6 +200,18 @@ resource "azurerm_backup_policy_vm" "sec-bupolicy" {
   }
 }
 
+resource "azurerm_backup_protected_vm" "backup-sec-lnx" {
+  resource_group_name = azurerm_resource_group.sec-rg.name
+  recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
+  source_vm_id        = azurerm_linux_virtual_machine.sec-lnx1.id
+  backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
 
+}
 
+resource "azurerm_backup_protected_vm" "backup-sec-win" {
+  resource_group_name = azurerm_resource_group.sec-rg.name
+  recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
+  source_vm_id        = azurerm_windows_virtual_machine.sec-win1.id
+  backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
 
+}
