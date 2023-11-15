@@ -195,6 +195,7 @@ resource "azurerm_recovery_services_vault" "sec-vault" {
   name                = "tfc-vault"
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
+  soft_delete_enabled = false
   tags = {
     DeployedBy = var.tag1
     BU         = var.tag2
