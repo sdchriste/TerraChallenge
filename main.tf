@@ -26,6 +26,10 @@ locals {
 resource "azurerm_resource_group" "sec-rg" {
   name     = var.rg_name
   location = var.loc_name
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
 
 }
 
@@ -34,7 +38,10 @@ resource "azurerm_virtual_network" "sec-vn" {
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
   address_space       = ["10.123.0.0/16"]
-
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
 }
 
 resource "azurerm_subnet" "sec-subnet1" {
@@ -42,7 +49,9 @@ resource "azurerm_subnet" "sec-subnet1" {
   resource_group_name  = azurerm_resource_group.sec-rg.name
   virtual_network_name = azurerm_virtual_network.sec-vn.name
   address_prefixes     = ["10.123.1.0/24"]
+
 }
+
 
 resource "azurerm_subnet" "sec-subnet2" {
   name                 = var.subnet_2
@@ -69,6 +78,10 @@ resource "azurerm_network_interface" "sec-nic1" {
   name                = local.lnx_name
   location            = azurerm_resource_group.sec-rg.location
   resource_group_name = azurerm_resource_group.sec-rg.name
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
 
   ip_configuration {
     name                          = "internal"
@@ -83,6 +96,10 @@ resource "azurerm_network_interface" "sec-nic2" {
   name                = local.nic2_name
   location            = azurerm_resource_group.sec-rg.location
   resource_group_name = azurerm_resource_group.sec-rg.name
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
 
   ip_configuration {
     name                          = "internal"
@@ -98,6 +115,10 @@ resource "azurerm_network_security_group" "sec-nsg" {
   name                = local.nsg_name
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
 }
 
 
@@ -111,9 +132,13 @@ resource "azurerm_windows_virtual_machine" "sec-win1" {
   name                = local.win_name
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
-  size                = "Standard_B1ms"
-  admin_username      = "adminuser"
-  admin_password      = "P@55w0rd!"
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
+  size           = "Standard_B1ms"
+  admin_username = "adminuser"
+  admin_password = "P@55w0rd!"
   network_interface_ids = [
     azurerm_network_interface.sec-nic2.id
   ]
@@ -137,8 +162,12 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
   name                = local.lnx_name
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
-  size                = "Standard_B1ms"
-  admin_username      = "adminuser"
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
+  size           = "Standard_B1ms"
+  admin_username = "adminuser"
   network_interface_ids = [
     azurerm_network_interface.sec-nic1.id,
   ]
@@ -166,7 +195,11 @@ resource "azurerm_recovery_services_vault" "sec-vault" {
   name                = "tfc-vault"
   resource_group_name = azurerm_resource_group.sec-rg.name
   location            = azurerm_resource_group.sec-rg.location
-  sku                 = "Standard"
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
+  sku = "Standard"
 
 }
 

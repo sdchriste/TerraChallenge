@@ -33,3 +33,15 @@ variable "subnet_3" {
   type        = string
   default     = "JumpBox"
 }
+
+variable "tag1" {
+  description = "Deployed By Tag"
+  type        = string
+  default     = "Terraform"
+}
+
+variable "tag2" {
+  description = "BU Tag"
+  type        = string
+  default     = "IT"
+}
