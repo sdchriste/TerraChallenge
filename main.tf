@@ -213,5 +213,4 @@ resource "azurerm_backup_protected_vm" "backup-sec-win" {
   recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
   source_vm_id        = azurerm_windows_virtual_machine.sec-win1.id
   backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
-
 }
