@@ -1,14 +1,27 @@
-variable "rg_name" {
-  description = "Resource Group Name"
+#variable "rg_name" {
+#   description = "Resource Group Name"
+#   type        = string
+#  default     = "rg-tfc"
+#}
+
+#variable "loc_name" {
+#  description = "Azure Location"
+#  type        = string
+#  default     = "eastus"
+#}
+
+variable "tag1" {
+  description = "Deployed By Tag"
   type        = string
-  default     = "rg-tfc"
+  default     = "Terraform"
 }
 
-variable "loc_name" {
-  description = "Azure Location"
+variable "tag2" {
+  description = "BU Tag"
   type        = string
-  default     = "eastus"
+  default     = "IT"
 }
+
 
 variable "v_net" {
   description = "Virtual Network Name"
@@ -32,16 +45,4 @@ variable "subnet_3" {
   description = "virtual subnet 3 name"
   type        = string
   default     = "JumpBox"
-}
-
-variable "tag1" {
-  description = "Deployed By Tag"
-  type        = string
-  default     = "Terraform"
-}
-
-variable "tag2" {
-  description = "BU Tag"
-  type        = string
-  default     = "IT"
 }

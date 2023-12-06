@@ -1,4 +1,4 @@
-# Main.tf v0.1 - Brnach Checkpoint2 - C
+# Main.tf v0.1 - Branch Checkpoint3 - C
 
 terraform {
   required_providers {
@@ -23,20 +23,18 @@ locals {
   lnx_name  = "tfc-lnc1"
 }
 
-resource "azurerm_resource_group" "sec-rg" {
-  name     = var.rg_name
-  location = var.loc_name
-  tags = {
-    DeployedBy = var.tag1
-    BU         = var.tag2
-  }
-
+module "resource-group" {
+  source   = "./module"
+  loc_name = "eastus"
+  rg_name  = "rg-tfc"
 }
+
+
 
 resource "azurerm_virtual_network" "sec-vn" {
   name                = var.v_net
-  resource_group_name = azurerm_resource_group.sec-rg.name
-  location            = azurerm_resource_group.sec-rg.location
+  resource_group_name = module.resource-group.rg_name
+  location            = module.resource-group.loc_name
   address_space       = ["10.123.0.0/16"]
   tags = {
     DeployedBy = var.tag1
@@ -46,7 +44,7 @@ resource "azurerm_virtual_network" "sec-vn" {
 
 resource "azurerm_subnet" "sec-subnet1" {
   name                 = var.subnet_1
-  resource_group_name  = azurerm_resource_group.sec-rg.name
+  resource_group_name  = module.resource-group.rg_name
   virtual_network_name = azurerm_virtual_network.sec-vn.name
   address_prefixes     = ["10.123.1.0/24"]
 
@@ -55,29 +53,29 @@ resource "azurerm_subnet" "sec-subnet1" {
 
 resource "azurerm_subnet" "sec-subnet2" {
   name                 = var.subnet_2
-  resource_group_name  = azurerm_resource_group.sec-rg.name
+  resource_group_name  = module.resource-group.rg_name
   virtual_network_name = azurerm_virtual_network.sec-vn.name
   address_prefixes     = ["10.123.2.0/24"]
 }
 
 resource "azurerm_subnet" "sec-subnet3" {
   name                 = var.subnet_3
-  resource_group_name  = azurerm_resource_group.sec-rg.name
+  resource_group_name  = module.resource-group.rg_name
   virtual_network_name = azurerm_virtual_network.sec-vn.name
   address_prefixes     = ["10.123.3.0/24"]
 }
 
 resource "azurerm_public_ip" "sec-publicip1" {
   name                = local.pip_name
-  resource_group_name = azurerm_resource_group.sec-rg.name
-  location            = azurerm_resource_group.sec-rg.location
+  resource_group_name = module.resource-group.rg_name
+  location            = module.resource-group.loc_name
   allocation_method   = "Dynamic"
 }
 
 resource "azurerm_network_interface" "sec-nic1" {
   name                = local.lnx_name
-  location            = azurerm_resource_group.sec-rg.location
-  resource_group_name = azurerm_resource_group.sec-rg.name
+  location            = module.resource-group.loc_name
+  resource_group_name = module.resource-group.rg_name
   tags = {
     DeployedBy = var.tag1
     BU         = var.tag2
@@ -94,8 +92,8 @@ resource "azurerm_network_interface" "sec-nic1" {
 
 resource "azurerm_network_interface" "sec-nic2" {
   name                = local.nic2_name
-  location            = azurerm_resource_group.sec-rg.location
-  resource_group_name = azurerm_resource_group.sec-rg.name
+  location            = module.resource-group.loc_name
+  resource_group_name = module.resource-group.rg_name
   tags = {
     DeployedBy = var.tag1
     BU         = var.tag2
@@ -113,8 +111,8 @@ resource "azurerm_network_interface" "sec-nic2" {
 
 resource "azurerm_network_security_group" "sec-nsg" {
   name                = local.nsg_name
-  resource_group_name = azurerm_resource_group.sec-rg.name
-  location            = azurerm_resource_group.sec-rg.location
+  resource_group_name = module.resource-group.rg_name
+  location            = module.resource-group.loc_name
   tags = {
     DeployedBy = var.tag1
     BU         = var.tag2
@@ -130,8 +128,8 @@ resource "azurerm_subnet_network_security_group_association" "sec-subnet-nsg" {
 
 resource "azurerm_windows_virtual_machine" "sec-win1" {
   name                = local.win_name
-  resource_group_name = azurerm_resource_group.sec-rg.name
-  location            = azurerm_resource_group.sec-rg.location
+  resource_group_name = module.resource-group.rg_name
+  location            = module.resource-group.loc_name
   tags = {
     DeployedBy = var.tag1
     BU         = var.tag2
@@ -160,8 +158,8 @@ resource "azurerm_windows_virtual_machine" "sec-win1" {
 
 resource "azurerm_linux_virtual_machine" "sec-lnx1" {
   name                = local.lnx_name
-  resource_group_name = azurerm_resource_group.sec-rg.name
-  location            = azurerm_resource_group.sec-rg.location
+  resource_group_name = module.resource-group.rg_name
+  location            = module.resource-group.loc_name
   tags = {
     DeployedBy = var.tag1
     BU         = var.tag2
@@ -193,8 +191,8 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
 
 resource "azurerm_recovery_services_vault" "sec-vault" {
   name                = "tfc-vault"
-  resource_group_name = azurerm_resource_group.sec-rg.name
-  location            = azurerm_resource_group.sec-rg.location
+  resource_group_name = module.resource-group.rg_name
+  location            = module.resource-group.loc_name
   soft_delete_enabled = false
   tags = {
     DeployedBy = var.tag1
@@ -206,7 +204,7 @@ resource "azurerm_recovery_services_vault" "sec-vault" {
 
 resource "azurerm_backup_policy_vm" "sec-bupolicy" {
   name                = "tfc-BackUpP"
-  resource_group_name = azurerm_resource_group.sec-rg.name
+  resource_group_name = module.resource-group.rg_name
   recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
   timezone            = "US Eastern Standard Time"
 
@@ -235,7 +233,7 @@ resource "azurerm_backup_policy_vm" "sec-bupolicy" {
 }
 
 resource "azurerm_backup_protected_vm" "backup-sec-lnx" {
-  resource_group_name = azurerm_resource_group.sec-rg.name
+  resource_group_name = module.resource-group.rg_name
   recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
   source_vm_id        = azurerm_linux_virtual_machine.sec-lnx1.id
   backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
@@ -243,7 +241,7 @@ resource "azurerm_backup_protected_vm" "backup-sec-lnx" {
 }
 
 resource "azurerm_backup_protected_vm" "backup-sec-win" {
-  resource_group_name = azurerm_resource_group.sec-rg.name
+  resource_group_name = module.resource-group.rg_name
   recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
   source_vm_id        = azurerm_windows_virtual_machine.sec-win1.id
   backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
