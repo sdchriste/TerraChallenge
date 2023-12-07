@@ -1,15 +1,3 @@
-#variable "rg_name" {
-#   description = "Resource Group Name"
-#   type        = string
-#  default     = "rg-tfc"
-#}
-
-#variable "loc_name" {
-#  description = "Azure Location"
-#  type        = string
-#  default     = "eastus"
-#}
-
 variable "tag1" {
   description = "Deployed By Tag"
   type        = string
