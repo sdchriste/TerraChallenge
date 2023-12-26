@@ -15,4 +15,3 @@ variable "loc_name" {
   type        = string
 
 }
-

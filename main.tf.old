@@ -29,11 +29,13 @@ module "resource-group" {
   rg_name  = "rg-tfc"
 }
 
-module "kvmod" {
+module "KeyVault" {
   source   = "./kvmod"
-  loc_name = module.resource-group.loc_name
+  vlt_name = "tfc-kv"
   rg_name  = module.resource-group.rg_name
-  vlt_name = "tfc-kvault"
+  loc_name = module.resource-group.loc_name
+
+
 }
 
 resource "azurerm_virtual_network" "sec-vn" {
@@ -141,7 +143,7 @@ resource "azurerm_windows_virtual_machine" "sec-win1" {
   }
   size           = "Standard_B1ms"
   admin_username = "adminuser"
-  admin_password = "P@55w0rd!"
+  admin_password = "a-12345678"
   network_interface_ids = [
     azurerm_network_interface.sec-nic2.id
   ]
@@ -171,6 +173,8 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
   }
   size           = "Standard_B1ms"
   admin_username = "adminuser"
+
+
   network_interface_ids = [
     azurerm_network_interface.sec-nic1.id,
   ]
@@ -251,3 +255,4 @@ resource "azurerm_backup_protected_vm" "backup-sec-win" {
   source_vm_id        = azurerm_windows_virtual_machine.sec-win1.id
   backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
 }
+
