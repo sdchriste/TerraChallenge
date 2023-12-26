@@ -169,17 +169,19 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
     DeployedBy = var.tag1
     BU         = var.tag2
   }
-  size           = "Standard_B1ms"
-  admin_username = "adminuser"
+  size                            = "Standard_B1ms"
+  admin_username                  = "adminuser"
+  admin_password                  = module.kvmod.linpw-admin
+  disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.sec-nic1.id,
   ]
 
-  admin_ssh_key {
-    username = "adminuser"
-    #key1
-    public_key = file("c:/users/steven.christenson/.ssh/id_rsa.pub")
-  }
+  # admin_ssh_key {
+  #   username = "adminuser"
+  #key1
+  #    public_key = file("c:/users/steven.christenson/.ssh/id_rsa.pub")
+  #  }
 
   os_disk {
     caching              = "ReadWrite"
