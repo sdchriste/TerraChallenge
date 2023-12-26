@@ -141,7 +141,7 @@ resource "azurerm_windows_virtual_machine" "sec-win1" {
   }
   size           = "Standard_B1ms"
   admin_username = "adminuser"
-  admin_password = "P@55w0rd!"
+  admin_password = module.kvmod.winpw-admin
   network_interface_ids = [
     azurerm_network_interface.sec-nic2.id
   ]
