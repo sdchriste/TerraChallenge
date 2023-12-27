@@ -35,7 +35,6 @@ module "kvmod" {
   rg_name  = module.resource-group.rg_name
   vlt_name = "tfc-kvault"
 }
-
 module "lbmod" {
   source    = "./lbmod"
   loc_name  = module.resource-group.loc_name

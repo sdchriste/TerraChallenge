@@ -8,7 +8,11 @@ terraform {
   }
 }
 
-resource "azure_public_ip" "lb_public_ip" {
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_public_ip" "lb_public_ip" {
   name                = var.lbip_name
   resource_group_name = var.rg_name
   location            = var.loc_name
@@ -19,16 +23,15 @@ resource "azurerm_lb" "lb" {
   name                = var.lb_name
   resource_group_name = var.rg_name
   location            = var.loc_name
-  sku                 = "Standard"
+  #sku                 = "Standard"
   frontend_ip_configuration {
     name                 = "PublicIPAddress"
     public_ip_address_id = azurerm_public_ip.lb_public_ip.id
   }
 }
 
-resource "azure_lb_rule" "lb_rule" {
+resource "azurerm_lb_rule" "lb_rule" {
   name                           = "LBRule"
-  resource_group_name            = var.rg_name
   loadbalancer_id                = azurerm_lb.lb.id
   protocol                       = "Tcp"
   frontend_port                  = 3389
