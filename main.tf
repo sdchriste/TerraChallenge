@@ -36,6 +36,14 @@ module "kvmod" {
   vlt_name = "tfc-kvault"
 }
 
+module "lbmod" {
+  source    = "./lbmod"
+  loc_name  = module.resource-group.loc_name
+  rg_name   = module.resource-group.rg_name
+  lb_name   = "tfc-lb"
+  lbip_name = "tfc-lb-ip"
+}
+
 resource "azurerm_virtual_network" "sec-vn" {
   name                = var.v_net
   resource_group_name = module.resource-group.rg_name
