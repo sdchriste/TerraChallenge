@@ -17,13 +17,14 @@ resource "azurerm_public_ip" "lb_public_ip" {
   resource_group_name = var.rg_name
   location            = var.loc_name
   allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 resource "azurerm_lb" "lb" {
   name                = var.lb_name
   resource_group_name = var.rg_name
   location            = var.loc_name
-  #sku                 = "Standard"
+  sku                 = "Standard"
   frontend_ip_configuration {
     name                 = "PublicIPAddress"
     public_ip_address_id = azurerm_public_ip.lb_public_ip.id
@@ -44,4 +45,16 @@ resource "azurerm_lb_probe" "lb_probe" {
   loadbalancer_id = azurerm_lb.lb.id
   port            = 80
   protocol        = "Tcp"
+}
+
+resource "azurerm_lb_backend_address_pool" "LBbackend" {
+  name            = "LBBackend"
+  loadbalancer_id = azurerm_lb.lb.id
+  #  virtual_network_id = var.v_net
+}
+
+resource "azurerm_lb_backend_address_pool_address" "LBbackendaddress" {
+  name                    = "LBBackendAddress"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.LBbackend.id
+  #ip_address              = azurerm_public_ip.sec-publicip1.id
 }

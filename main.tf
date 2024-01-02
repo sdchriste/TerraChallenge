@@ -22,7 +22,6 @@ locals {
   win_name  = "tcf-win1"
   lnx_name  = "tfc-lnc1"
 }
-
 module "resource-group" {
   source   = "./module"
   loc_name = "eastus"
@@ -41,6 +40,7 @@ module "lbmod" {
   rg_name   = module.resource-group.rg_name
   lb_name   = "tfc-lb"
   lbip_name = "tfc-lb-ip"
+
 }
 
 resource "azurerm_virtual_network" "sec-vn" {
@@ -260,3 +260,7 @@ resource "azurerm_backup_protected_vm" "backup-sec-win" {
   source_vm_id        = azurerm_windows_virtual_machine.sec-win1.id
   backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
 }
+
+
+#https://github.com/hashicorp/terraform-provider-azurerm/issues/7802
+#https://adityagarg94.medium.com/azure-loadbalancer-fundamentals-how-to-use-nsgs-with-azure-classic-loadbalancer-2-3-1ea57eec2bd9
