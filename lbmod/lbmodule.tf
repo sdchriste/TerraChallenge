@@ -31,6 +31,12 @@ resource "azurerm_lb" "lb" {
   }
 }
 
+resource "azurerm_lb_backend_address_pool" "LBbackend" {
+  name            = "LBBackend"
+  loadbalancer_id = azurerm_lb.lb.id
+}
+
+
 resource "azurerm_lb_rule" "lb_rule" {
   name                           = "LBRule"
   loadbalancer_id                = azurerm_lb.lb.id
@@ -45,12 +51,6 @@ resource "azurerm_lb_probe" "lb_probe" {
   loadbalancer_id = azurerm_lb.lb.id
   port            = 80
   protocol        = "Tcp"
-}
-
-resource "azurerm_lb_backend_address_pool" "LBbackend" {
-  name            = "LBBackend"
-  loadbalancer_id = azurerm_lb.lb.id
-  #  virtual_network_id = var.v_net
 }
 
 resource "azurerm_lb_backend_address_pool_address" "LBbackendaddress" {

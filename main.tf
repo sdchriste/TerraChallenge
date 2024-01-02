@@ -44,7 +44,7 @@ module "lbmod" {
 }
 
 resource "azurerm_virtual_network" "sec-vn" {
-  name                = var.v_net
+  name                = "tcf-network"
   resource_group_name = module.resource-group.rg_name
   location            = module.resource-group.loc_name
   address_space       = ["10.123.0.0/16"]
@@ -181,7 +181,7 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
   admin_password                  = module.kvmod.linpw-admin
   disable_password_authentication = false
   network_interface_ids = [
-    azurerm_network_interface.sec-nic1.id,
+    azurerm_network_interface.sec-nic1.id
   ]
 
   # admin_ssh_key {

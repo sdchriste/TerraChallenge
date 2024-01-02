@@ -10,13 +10,6 @@ variable "tag2" {
   default     = "IT"
 }
 
-
-variable "v_net" {
-  description = "Virtual Network Name"
-  type        = string
-  default     = "tcf-network"
-}
-
 variable "subnet_1" {
   description = "virtual subnet 1 name"
   type        = string
@@ -34,3 +27,4 @@ variable "subnet_3" {
   type        = string
   default     = "JumpBox"
 }
+
