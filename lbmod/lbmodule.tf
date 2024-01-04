@@ -12,6 +12,7 @@ provider "azurerm" {
   features {}
 }
 
+
 resource "azurerm_public_ip" "lb_public_ip" {
   name                = var.lbip_name
   resource_group_name = var.rg_name
@@ -34,6 +35,7 @@ resource "azurerm_lb" "lb" {
 resource "azurerm_lb_backend_address_pool" "LBbackend" {
   name            = "LBBackend"
   loadbalancer_id = azurerm_lb.lb.id
+  #virtual_network_id = var.vn_name
 }
 
 
@@ -56,5 +58,7 @@ resource "azurerm_lb_probe" "lb_probe" {
 resource "azurerm_lb_backend_address_pool_address" "LBbackendaddress" {
   name                    = "LBBackendAddress"
   backend_address_pool_id = azurerm_lb_backend_address_pool.LBbackend.id
-  #ip_address              = azurerm_public_ip.sec-publicip1.id
+  virtual_network_id      = var.vn_name
+  ip_address              = "10.123.1.4"
 }
+

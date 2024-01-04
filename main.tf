@@ -40,7 +40,8 @@ module "lbmod" {
   rg_name   = module.resource-group.rg_name
   lb_name   = "tfc-lb"
   lbip_name = "tfc-lb-ip"
-
+  lb_nic1   = azurerm_network_interface.sec-nic1.id
+  vn_name   = azurerm_virtual_network.sec-vn.id
 }
 
 resource "azurerm_virtual_network" "sec-vn" {
