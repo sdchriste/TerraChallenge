@@ -28,3 +28,8 @@ variable "subnet_3" {
   default     = "JumpBox"
 }
 
+variable "lnx_name" {
+  description = "Linux VM Name"
+  type        = string
+  default     = "tfc-lnc1"
+}

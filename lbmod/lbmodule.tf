@@ -35,7 +35,6 @@ resource "azurerm_lb" "lb" {
 resource "azurerm_lb_backend_address_pool" "LBbackend" {
   name            = "LBBackend"
   loadbalancer_id = azurerm_lb.lb.id
-  #virtual_network_id = var.vn_name
 }
 
 

@@ -43,6 +43,17 @@ module "lbmod" {
   lb_nic1   = azurerm_network_interface.sec-nic1.id
   vn_name   = azurerm_virtual_network.sec-vn.id
 }
+module "lnxbld" {
+  source         = "./lnxbld"
+  loc_name       = module.resource-group.loc_name
+  rg_name        = module.resource-group.rg_name
+  lnx_name       = var.lnx_name
+  lnx_nic        = azurerm_network_interface.sec-nic1.id
+  admin_password = module.kvmod.linpw-admin
+  tag1           = var.tag1
+  tag2           = var.tag2
+
+}
 
 resource "azurerm_virtual_network" "sec-vn" {
   name                = "tcf-network"
@@ -86,7 +97,7 @@ resource "azurerm_public_ip" "sec-publicip1" {
 }
 
 resource "azurerm_network_interface" "sec-nic1" {
-  name                = local.lnx_name
+  name                = var.lnx_name
   location            = module.resource-group.loc_name
   resource_group_name = module.resource-group.rg_name
   tags = {
@@ -169,40 +180,40 @@ resource "azurerm_windows_virtual_machine" "sec-win1" {
 
 #ssh key gen 
 
-resource "azurerm_linux_virtual_machine" "sec-lnx1" {
-  name                = local.lnx_name
-  resource_group_name = module.resource-group.rg_name
-  location            = module.resource-group.loc_name
-  tags = {
-    DeployedBy = var.tag1
-    BU         = var.tag2
-  }
-  size                            = "Standard_B1ms"
-  admin_username                  = "adminuser"
-  admin_password                  = module.kvmod.linpw-admin
-  disable_password_authentication = false
-  network_interface_ids = [
-    azurerm_network_interface.sec-nic1.id
-  ]
+#resource "azurerm_linux_virtual_machine" "sec-lnx1" {
+#  name                = local.lnx_name
+#  resource_group_name = module.resource-group.rg_name
+#  location            = module.resource-group.loc_name
+#  tags = {
+#    DeployedBy = var.tag1
+#    BU         = var.tag2
+#  }
+#  size                            = "Standard_B1ms"
+#  admin_username                  = "adminuser"
+#  admin_password                  = module.kvmod.linpw-admin
+#  disable_password_authentication = false
+#  network_interface_ids = [
+#    azurerm_network_interface.sec-nic1.id
+#  ]
 
-  # admin_ssh_key {
-  #   username = "adminuser"
-  #key1
-  #    public_key = file("c:/users/steven.christenson/.ssh/id_rsa.pub")
-  #  }
+# admin_ssh_key {
+#   username = "adminuser"
+#key1
+#    public_key = file("c:/users/steven.christenson/.ssh/id_rsa.pub")
+#  }
 
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
+# os_disk {
+#   caching              = "ReadWrite"
+#   storage_account_type = "Standard_LRS"
+# }
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
-    version   = "latest"
-  }
-}
+# source_image_reference {
+# publisher = "Canonical"
+# offer     = "0001-com-ubuntu-server-jammy"
+# sku       = "22_04-lts"
+# version   = "latest"
+#}
+#}
 
 resource "azurerm_recovery_services_vault" "sec-vault" {
   name                = "tfc-vault"
@@ -250,7 +261,7 @@ resource "azurerm_backup_policy_vm" "sec-bupolicy" {
 resource "azurerm_backup_protected_vm" "backup-sec-lnx" {
   resource_group_name = module.resource-group.rg_name
   recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
-  source_vm_id        = azurerm_linux_virtual_machine.sec-lnx1.id
+  source_vm_id        = module.lnxbld.lnx_name
   backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
 
 }
