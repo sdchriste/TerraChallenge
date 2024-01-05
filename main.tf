@@ -178,43 +178,6 @@ resource "azurerm_windows_virtual_machine" "sec-win1" {
   }
 }
 
-#ssh key gen 
-
-#resource "azurerm_linux_virtual_machine" "sec-lnx1" {
-#  name                = local.lnx_name
-#  resource_group_name = module.resource-group.rg_name
-#  location            = module.resource-group.loc_name
-#  tags = {
-#    DeployedBy = var.tag1
-#    BU         = var.tag2
-#  }
-#  size                            = "Standard_B1ms"
-#  admin_username                  = "adminuser"
-#  admin_password                  = module.kvmod.linpw-admin
-#  disable_password_authentication = false
-#  network_interface_ids = [
-#    azurerm_network_interface.sec-nic1.id
-#  ]
-
-# admin_ssh_key {
-#   username = "adminuser"
-#key1
-#    public_key = file("c:/users/steven.christenson/.ssh/id_rsa.pub")
-#  }
-
-# os_disk {
-#   caching              = "ReadWrite"
-#   storage_account_type = "Standard_LRS"
-# }
-
-# source_image_reference {
-# publisher = "Canonical"
-# offer     = "0001-com-ubuntu-server-jammy"
-# sku       = "22_04-lts"
-# version   = "latest"
-#}
-#}
-
 resource "azurerm_recovery_services_vault" "sec-vault" {
   name                = "tfc-vault"
   resource_group_name = module.resource-group.rg_name
@@ -272,6 +235,8 @@ resource "azurerm_backup_protected_vm" "backup-sec-win" {
   source_vm_id        = azurerm_windows_virtual_machine.sec-win1.id
   backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
 }
+
+
 
 
 #https://github.com/hashicorp/terraform-provider-azurerm/issues/7802
