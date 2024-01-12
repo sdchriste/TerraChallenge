@@ -32,3 +32,13 @@ variable "tag2" {
   description = "BU Tag"
   type        = string
 }
+
+variable "vm_count" {
+  description = "Count"
+  type        = number
+}
+
+variable "subnet" {
+  description = "virtual subnet 1 name"
+  type        = string
+}

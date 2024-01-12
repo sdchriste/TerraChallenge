@@ -20,12 +20,9 @@ variable "lbip_name" {
   type        = string
 }
 
-variable "lb_nic1" {
-  description = "Load Balancer NIC1"
-  type        = string
-}
-
 variable "vn_name" {
   description = "Virtual Network Name"
   type        = string
 }
+
+

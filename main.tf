@@ -20,7 +20,7 @@ locals {
   nic2_name = "win1-nic"
   nsg_name  = "tfc-nsg1"
   win_name  = "tcf-win1"
-  lnx_name  = "tfc-lnc1"
+  lnx_name  = "tfc-lnc"
 }
 module "resource-group" {
   source   = "./module"
@@ -40,18 +40,20 @@ module "lbmod" {
   rg_name   = module.resource-group.rg_name
   lb_name   = "tfc-lb"
   lbip_name = "tfc-lb-ip"
-  lb_nic1   = azurerm_network_interface.sec-nic1.id
   vn_name   = azurerm_virtual_network.sec-vn.id
+
 }
 module "lnxbld" {
   source         = "./lnxbld"
   loc_name       = module.resource-group.loc_name
   rg_name        = module.resource-group.rg_name
   lnx_name       = var.lnx_name
-  lnx_nic        = azurerm_network_interface.sec-nic1.id
   admin_password = module.kvmod.linpw-admin
   tag1           = var.tag1
   tag2           = var.tag2
+  vm_count       = var.vm_count
+  lnx_nic        = var.lnx_name
+  subnet         = azurerm_subnet.sec-subnet1.id
 
 }
 
@@ -96,23 +98,7 @@ resource "azurerm_public_ip" "sec-publicip1" {
   allocation_method   = "Dynamic"
 }
 
-resource "azurerm_network_interface" "sec-nic1" {
-  name                = var.lnx_name
-  location            = module.resource-group.loc_name
-  resource_group_name = module.resource-group.rg_name
-  tags = {
-    DeployedBy = var.tag1
-    BU         = var.tag2
-  }
 
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = azurerm_subnet.sec-subnet1.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.sec-publicip1.id
-
-  }
-}
 
 resource "azurerm_network_interface" "sec-nic2" {
   name                = local.nic2_name
@@ -221,10 +207,15 @@ resource "azurerm_backup_policy_vm" "sec-bupolicy" {
   }
 }
 
+output "module_server_names" {
+  value = module.lnxbld.lnx_name
+}
+
 resource "azurerm_backup_protected_vm" "backup-sec-lnx" {
+  count               = length(module.lnxbld.lnx_name)
   resource_group_name = module.resource-group.rg_name
   recovery_vault_name = azurerm_recovery_services_vault.sec-vault.name
-  source_vm_id        = module.lnxbld.lnx_name
+  source_vm_id        = lookup(module.lnxbld.lnx_name, "${var.lnx_name}-${count.index}", "")
   backup_policy_id    = azurerm_backup_policy_vm.sec-bupolicy.id
 
 }

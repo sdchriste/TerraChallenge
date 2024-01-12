@@ -12,8 +12,28 @@ provider "azurerm" {
   features {}
 }
 
+resource "azurerm_network_interface" "sec-nic" {
+  count               = var.vm_count
+  name                = "sec-nic-${count.index}-nic"
+  location            = var.loc_name
+  resource_group_name = var.rg_name
+  tags = {
+    DeployedBy = var.tag1
+    BU         = var.tag2
+  }
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = var.subnet
+    private_ip_address_allocation = "Dynamic"
+    #public_ip_address_id          = azurerm_public_ip.sec-publicip1.id
+
+  }
+}
+
 resource "azurerm_linux_virtual_machine" "sec-lnx1" {
-  name                = var.lnx_name
+  count               = var.vm_count
+  name                = "${var.lnx_name}-${count.index}"
   resource_group_name = var.rg_name
   location            = var.loc_name
   tags = {
@@ -25,7 +45,7 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
   admin_password                  = var.admin_password
   disable_password_authentication = false
   network_interface_ids = [
-    var.lnx_nic
+    azurerm_network_interface.sec-nic[count.index].id
   ]
 
   os_disk {

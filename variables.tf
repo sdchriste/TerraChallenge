@@ -31,5 +31,16 @@ variable "subnet_3" {
 variable "lnx_name" {
   description = "Linux VM Name"
   type        = string
-  default     = "tfc-lnc1"
+  default     = "tfc-lnc"
 }
+variable "vm_count" {
+  description = "Count"
+  type        = number
+  default     = 3
+}
+variable "lnx_nic" {
+  description = "Linux VM NIC1"
+  type        = string
+  default     = "sec-nic"
+}
+

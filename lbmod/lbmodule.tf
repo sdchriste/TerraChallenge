@@ -59,5 +59,6 @@ resource "azurerm_lb_backend_address_pool_address" "LBbackendaddress" {
   backend_address_pool_id = azurerm_lb_backend_address_pool.LBbackend.id
   virtual_network_id      = var.vn_name
   ip_address              = "10.123.1.4"
+
 }
 
