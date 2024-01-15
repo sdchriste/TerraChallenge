@@ -35,13 +35,13 @@ module "kvmod" {
   vlt_name = "tfc-kvault"
 }
 module "lbmod" {
-  source    = "./lbmod"
-  loc_name  = module.resource-group.loc_name
-  rg_name   = module.resource-group.rg_name
-  lb_name   = "tfc-lb"
-  lbip_name = "tfc-lb-ip"
-  vn_name   = azurerm_virtual_network.sec-vn.id
-
+  source               = "./lbmod"
+  loc_name             = module.resource-group.loc_name
+  rg_name              = module.resource-group.rg_name
+  lb_name              = "tfc-lb"
+  lbip_name            = "tfc-lb-ip"
+  vn_name              = azurerm_virtual_network.sec-vn.id
+  private_ip_addresses = module.lnxbld.private_ip_addresses
 }
 module "lnxbld" {
   source         = "./lnxbld"

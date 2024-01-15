@@ -25,4 +25,7 @@ variable "vn_name" {
   type        = string
 }
 
-
+variable "private_ip_addresses" {
+  description = "Private IP Addresses"
+  type        = list(string)
+}
