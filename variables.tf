@@ -36,7 +36,7 @@ variable "lnx_name" {
 variable "vm_count" {
   description = "Count"
   type        = number
-  default     = 3
+  default     = 2
 }
 variable "lnx_nic" {
   description = "Linux VM NIC1"

@@ -26,7 +26,7 @@ resource "azurerm_network_interface" "sec-nic" {
     name                          = "internal"
     subnet_id                     = var.subnet
     private_ip_address_allocation = "Dynamic"
-    #public_ip_address_id          = azurerm_public_ip.sec-publicip1.id
+
 
   }
 }
@@ -60,3 +60,34 @@ resource "azurerm_linux_virtual_machine" "sec-lnx1" {
     version   = "latest"
   }
 }
+resource "azurerm_virtual_machine_extension" "nginx" {
+  count                = var.vm_count
+  name                 = "nginx"
+  virtual_machine_id   = azurerm_linux_virtual_machine.sec-lnx1[count.index].id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.1"
+
+  settings = <<SETTINGS
+ {
+  "commandToExecute": "./configure-nginx.sh",
+  "fileUris":["https://raw.githubusercontent.com/MicrosoftDocs/mslearn-welcome-to-azure/master/configure-nginx.sh"]
+
+ }
+
+ SETTINGS
+
+
+  tags = {
+    environment = "Production"
+  }
+}
+
+
+
+
+
+
+
+
+

@@ -113,7 +113,7 @@ resource "azurerm_network_interface" "sec-nic2" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.sec-subnet3.id
     private_ip_address_allocation = "Dynamic"
-
+    public_ip_address_id          = azurerm_public_ip.sec-publicip1.id
   }
 }
 
@@ -129,6 +129,33 @@ resource "azurerm_network_security_group" "sec-nsg" {
   }
 }
 
+resource "azurerm_network_security_rule" "allow_ssh" {
+  name                        = "AllowSSH"
+  priority                    = 1001
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = module.resource-group.rg_name
+  network_security_group_name = azurerm_network_security_group.sec-nsg.name
+}
+
+resource "azurerm_network_security_rule" "allow_web" {
+  name                        = "AllowWeb"
+  priority                    = 1002
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "80"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = module.resource-group.rg_name
+  network_security_group_name = azurerm_network_security_group.sec-nsg.name
+}
 
 resource "azurerm_subnet_network_security_group_association" "sec-subnet-nsg" {
   subnet_id                 = azurerm_subnet.sec-subnet1.id
